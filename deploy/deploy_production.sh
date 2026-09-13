@@ -50,16 +50,18 @@ sudo systemctl restart iaexpress
 
 # 5. Configurar Nginx
 echo "--> Configurando Nginx..."
+sudo rm -f /etc/nginx/sites-enabled/default
 sudo cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/express.aedia.es
 sudo ln -sf /etc/nginx/sites-available/express.aedia.es /etc/nginx/sites-enabled/
 
 # Si el certificado SSL no existe aún, usar config HTTP de inicio rápido
 if [ ! -f "/etc/letsencrypt/live/express.aedia.es/fullchain.pem" ]; then
-    echo "--> SSL no detectado aún. Configurando Nginx en modo HTTP (puerto 80)..."
+    echo "--> SSL no detectado aún. Configurando Nginx en modo HTTP (puerto 80 con IP por defecto)..."
     sudo bash -c 'cat << "EOF" > /etc/nginx/sites-available/express.aedia.es
 server {
-    listen 80;
-    server_name express.aedia.es _;
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
 
     gzip on;
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
@@ -81,6 +83,7 @@ fi
 
 sudo nginx -t
 sudo systemctl reload nginx
+
 
 echo "=================================================================="
 echo "  ¡DESPLIEGUE EN PRODUCCIÓN COMPLETADO CON ÉXITO!                "
