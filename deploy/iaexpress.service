@@ -1,0 +1,15 @@
+[Unit]
+Description=IA EXPRESS Backend Service (Motor 1 & Motor 2)
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/var/www/iaexpress/backend
+ExecStart=/var/www/iaexpress/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8050
+Restart=always
+RestartSec=5
+Environment=BASE_URL=https://express.aedia.es
+Environment=PORT=8050
+
+[Install]
+WantedBy=multi-user.target

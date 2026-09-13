@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  iaexpress:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: iaexpress_app
+    restart: always
+    ports:
+      - "8050:8050"
+    environment:
+      - BASE_URL=https://express.aedia.es
+      - PORT=8050
+      - DEBUG=False
+    volumes:
+      - iaexpress_data:/app/backend/public
+
+volumes:
+  iaexpress_data:

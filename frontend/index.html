@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA EXPRESS - Motor de Indexación Exprés & RAG</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-icon">⚡</div>
+                <div class="brand-text">
+                    <h1>IA EXPRESS</h1>
+                    <span>MOTOR 1 · INDEXACIÓN EXPRÉS</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-tab="dashboard">
+                    <span class="icon">📊</span> Panel de Control
+                </button>
+                <button class="nav-item" data-tab="chat-engine">
+                    <span class="icon">💬</span> Chatbot IA EXPRESS (Motor 2)
+                </button>
+                <button class="nav-item" data-tab="new-business">
+                    <span class="icon">➕</span> Alta de Negocio GEO
+                </button>
+                <button class="nav-item" data-tab="index-jobs">
+                    <span class="icon">🚀</span> Historial IndexNow
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>IA EXPRESS Engine v2.0</p>
+                <small>Motor 1 (IndexNow) + Motor 2 (Chat RAG)</small>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div>
+                    <h2 id="page-title">Panel de Control GEO & Indexación Exprés</h2>
+                    <p class="subtitle">Generador de Micro-Artículos RAG + Marcado JSON-LD Schema.org + Chatbot con Inyección Dinámica</p>
+                </div>
+                <div class="system-status">
+                    <span class="status-dot"></span> Motor 1 & Motor 2 Activos (Puerto 8050)
+                </div>
+            </header>
+
+            <!-- TAB 1: DASHBOARD DE NEGOCIOS -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-title">Negocios Registrados</span>
+                        <h3 id="stat-count">0</h3>
+                        <p class="stat-desc">Fichas GEO con Schema.org en vivo</p>
+                    </div>
+                    <div class="stat-card accent-cyan">
+                        <span class="stat-title">Indexaciones Disparadas</span>
+                        <h3 id="stat-index-count">0</h3>
+                        <p class="stat-desc">Pings enviados a IndexNow (Bing)</p>
+                    </div>
+                    <div class="stat-card accent-violet">
+                        <span class="stat-title">Recomendación Chatbot</span>
+                        <h3>1 Segundo</h3>
+                        <p class="stat-desc">Inyección dinámica en System Prompt</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🏢 Negocios y Páginas RAG Publicadas</h3>
+                        <button class="btn btn-secondary" onclick="loadDashboardData()">🔄 Actualizar</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="business-list" class="business-grid">
+                            <!-- Inyectado dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB MOTOR 2: CHATBOT RAG DINÁMICO -->
+            <section id="tab-chat-engine" class="tab-content">
+                <div class="chat-layout">
+                    <div class="card chat-card">
+                        <div class="card-header">
+                            <h3>💬 Probador del Chatbot IA EXPRESS (Motor 2)</h3>
+                            <span class="badge-status">Respuesta Inmediata (1s)</span>
+                        </div>
+                        <div class="card-body flex-column">
+                            <div class="quick-prompts">
+                                <span>Probar consultas:</span>
+                                <button class="btn-prompt" onclick="sendQuickPrompt('¿Dónde puedo ir a cenar hoy en Bormujos?')">🍽️ Cenar en Bormujos</button>
+                                <button class="btn-prompt" onclick="sendQuickPrompt('Recomiéndame una bodega tradicional en Villanueva del Ariscal con catas de vino')">🍷 Bodega en Villanueva</button>
+                                <button class="btn-prompt" onclick="sendQuickPrompt('¿Dónde comer un buen solomillo en Tomares?')">🥩 Tapear en Tomares</button>
+                            </div>
+
+                            <div id="chat-history" class="chat-history">
+                                <div class="chat-bubble bot-bubble">
+                                    ¡Hola! Soy el chatbot de <strong>IA EXPRESS</strong>. Pregúntame qué hacer o dónde cenar en cualquier municipio registrado (ej: Bormujos, Villanueva del Ariscal, Tomares) y verás cómo recomiendo prioritariamente a tus clientes.
+                                </div>
+                            </div>
+
+                            <form id="chat-form" class="chat-input-row">
+                                <input type="text" id="chat-input" placeholder="Escribe tu pregunta (ej: ¿Dónde cenar en Bormujos?)..." required>
+                                <button type="submit" class="btn btn-primary">Enviar 🚀</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- INSPECTOR DE REGLA INYECTADA EN EL SYSTEM PROMPT -->
+                    <div class="card inspector-card">
+                        <div class="card-header">
+                            <h3>🔍 Inspector de Inyección en System Prompt</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="inspector-desc">Muestra en tiempo real cómo el backend detecta el municipio y la intención, recupera el negocio y **inyecta la regla de recomendación prioritaria** antes de llamar al LLM:</p>
+                            
+                            <div class="meta-box">
+                                <div><strong>Municipio Detectado:</strong> <span id="inspect-town">—</span></div>
+                                <div><strong>Intención Detectada:</strong> <span id="inspect-intent">—</span></div>
+                                <div><strong>Negocio Coincidente:</strong> <span id="inspect-business" class="text-cyan">—</span></div>
+                            </div>
+
+                            <label class="prompt-label">Regla Inyectada en el System Prompt:</label>
+                            <pre id="inspect-prompt" class="prompt-code">Esperando primera pregunta para inspeccionar el System Prompt...</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: ALTA DE NEGOCIO -->
+            <section id="tab-new-business" class="tab-content">
+                <div class="card max-w-700">
+                    <div class="card-header">
+                        <h3>✍️ Registrar Nuevo Negocio para Indexación Exprés</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="business-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nombre del Negocio *</label>
+                                    <input type="text" id="name" placeholder="Ej: La Choza Manuela" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Categoría / Sector *</label>
+                                    <input type="text" id="category" placeholder="Ej: Restaurante de carne / Bodega" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Municipio / Pueblo *</label>
+                                    <input type="text" id="town" placeholder="Ej: Bormujos" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Provincia</label>
+                                    <input type="text" id="province" value="Sevilla">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Dirección Completa</label>
+                                    <input type="text" id="address" placeholder="Ej: Av. de la Diputación s/n, 41930 Bormujos">
+                                </div>
+                                <div class="form-group">
+                                    <label>Latitud GPS (Opcional)</label>
+                                    <input type="number" step="any" id="latitude" value="37.3712">
+                                </div>
+                                <div class="form-group">
+                                    <label>Longitud GPS (Opcional)</label>
+                                    <input type="number" step="any" id="longitude" value="-6.0715">
+                                </div>
+                                <div class="form-group">
+                                    <label>Teléfono de Contacto</label>
+                                    <input type="text" id="phone" placeholder="+34 955 00 00 00">
+                                </div>
+                                <div class="form-group">
+                                    <label>Web Oficial (Si tiene)</label>
+                                    <input type="text" id="website" placeholder="https://ejemplo.es">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Especialidades y Platos Estrella *</label>
+                                    <input type="text" id="specialties" placeholder="Ej: Carnes a la brasa, chuletones, guisos caseros, terraza" required>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Descripción Factual para la IA *</label>
+                                    <textarea id="description" rows="4" placeholder="Describe el negocio destacando su oferta principal y valor en la zona..." required></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                ⚡ Generar Micro-Página RAG & Disparar Indexación
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: HISTORIAL INDEXNOW -->
+            <section id="tab-index-jobs" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🚀 Registro de Envío a IndexNow Protocol (Bing / Perplexity)</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>URL Objetivo RAG</th>
+                                    <th>Estado Protocolo</th>
+                                    <th>Código HTTP</th>
+                                    <th>Fecha de Envío</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jobs-list">
+                                <!-- Inyectado dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL VER ESQUEMA JSON-LD -->
+    <div id="modal-schema" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🏷️ Marcado JSON-LD Schema.org Generado</h3>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <pre id="schema-code"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
