@@ -61,7 +61,8 @@ if [ ! -f "/etc/letsencrypt/live/express.aedia.es/fullchain.pem" ]; then
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name _;
+    server_name aistand.es express.aistand.es express.aedia.es _;
+
 
     gzip on;
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
