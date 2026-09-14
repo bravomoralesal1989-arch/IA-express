@@ -16,7 +16,13 @@ def generate_schema_jsonld(business) -> dict:
         "@context": "https://schema.org",
         "@type": schema_type,
         "name": business.name,
+        "alternateName": [
+            "Los Mayores by La Extremeña",
+            "Bar Los Mayores",
+            "Bar Los Mayores by La Extremeña"
+        ],
         "description": business.description,
+
         "url": business.website or f"http://194.164.161.104/sites/{business.slug}",
         "telephone": business.phone or "+34 900 000 000",
         "address": {

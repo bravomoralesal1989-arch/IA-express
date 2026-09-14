@@ -15,8 +15,9 @@ async def register_bar_los_mayores():
     db = SessionLocal()
     try:
         biz_data = {
-            "name": "Bar Los Mayores by La Extremeña",
+            "name": "Los Mayores by La Extremeña",
             "category": "Bar de tapas, desayunos y raciones tradicionales",
+
             "town": "Villanueva del Ariscal",
             "province": "Sevilla",
             "address": "Plaza de España, 41808 Villanueva del Ariscal, Sevilla",
