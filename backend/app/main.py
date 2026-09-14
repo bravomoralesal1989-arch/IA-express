@@ -36,14 +36,27 @@ settings.PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
 sites_dir = settings.PUBLIC_DIR / "sites"
 sites_dir.mkdir(parents=True, exist_ok=True)
 
+from app.services.sitemap_service import generate_sitemap_xml, generate_robots_txt
+from app.services.google_indexing_service import submit_to_google
+
 # Servir clave IndexNow en la raíz para verificación de Bing/Protocolo
 @app.get(f"/{settings.INDEXNOW_KEY}.txt")
 async def get_indexnow_key():
     return Response(content=settings.INDEXNOW_KEY, media_type="text/plain")
 
+@app.get("/sitemap.xml")
+async def get_sitemap(db: Session = Depends(get_db)):
+    xml_content = generate_sitemap_xml(db)
+    return Response(content=xml_content, media_type="application/xml")
+
+@app.get("/robots.txt")
+async def get_robots():
+    robots_content = generate_robots_txt()
+    return Response(content=robots_content, media_type="text/plain")
+
 @app.get("/api/health")
 async def health_check():
-    return {"status": "online", "app": settings.APP_NAME, "motor_1": "Indexación Exprés", "motor_2": "Chatbot RAG Dinámico"}
+    return {"status": "online", "app": settings.APP_NAME, "motor_1": "Indexación Exprés (IndexNow + Googlebot)", "motor_2": "Chatbot RAG Dinámico"}
 
 # --- ENDPOINTS PARA MOTOR 1: REGISTRO & CONTENIDO GEO ---
 
@@ -89,6 +102,10 @@ async def create_business(data: BusinessCreate, db: Session = Depends(get_db)):
     db.add(content)
     db.commit()
 
+    # Disparar automáticamente notificaciones a Bing/Perplexity y Google
+    await submit_url_to_indexnow(published_url)
+    await submit_to_google(published_url)
+
     return business
 
 
@@ -102,7 +119,7 @@ async def get_business_contents(business_id: int, db: Session = Depends(get_db))
     return db.query(GeneratedContent).filter(GeneratedContent.business_id == business_id).all()
 
 
-# --- ENDPOINT MOTOR 1: DISPARADOR EXPRÉS INDEXNOW ---
+# --- ENDPOINT MOTOR 1: DISPARADOR EXPRÉS INDEXNOW + GOOGLE ---
 
 @app.post("/api/index-now/{business_id}", response_model=IndexJobOut)
 async def trigger_index_now(business_id: int, db: Session = Depends(get_db)):
@@ -113,13 +130,16 @@ async def trigger_index_now(business_id: int, db: Session = Depends(get_db)):
     content = db.query(GeneratedContent).filter(GeneratedContent.business_id == business_id).order_by(GeneratedContent.created_at.desc()).first()
     target_url = content.published_url if content else f"{settings.BASE_URL}/sites/{business.slug}/index.html"
 
-    # Enviar al protocolo IndexNow
+    # Enviar al protocolo IndexNow (Bing/Perplexity)
     result = await submit_url_to_indexnow(target_url)
+
+    # Notificar también a Googlebot mediante Ping de Sitemap
+    await submit_to_google(target_url)
 
     job = IndexJob(
         business_id=business.id,
         target_url=target_url,
-        indexnow_status=result["status"],
+        indexnow_status=f"{result['status']} (Bing & Google Pinged)",
         http_status_code=result["http_code"],
         response_body=result["response_body"]
     )
@@ -133,6 +153,7 @@ async def trigger_index_now(business_id: int, db: Session = Depends(get_db)):
 @app.get("/api/index-jobs", response_model=list[IndexJobOut])
 async def list_index_jobs(db: Session = Depends(get_db)):
     return db.query(IndexJob).order_by(IndexJob.submitted_at.desc()).all()
+
 
 
 # --- ENDPOINT MOTOR 2: CHATBOT RAG + SYSTEM PROMPT INJECTION ---

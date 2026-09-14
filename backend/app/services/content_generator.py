@@ -17,30 +17,36 @@ def generate_schema_jsonld(business) -> dict:
         "@type": schema_type,
         "name": business.name,
         "description": business.description,
-        "url": business.website or f"http://localhost:8050/sites/{business.slug}",
+        "url": business.website or f"http://194.164.161.104/sites/{business.slug}",
         "telephone": business.phone or "+34 900 000 000",
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": business.address or f"Calle Principal, {business.town}",
+            "streetAddress": business.address or f"Plaza de España, {business.town}",
             "addressLocality": business.town,
             "addressRegion": business.province or "Sevilla",
             "addressCountry": "ES"
         },
         "geo": {
             "@type": "GeoCoordinates",
-            "latitude": business.latitude or 37.3712,
-            "longitude": business.longitude or -6.0715
+            "latitude": business.latitude or 37.3970,
+            "longitude": business.longitude or -6.1418
         },
         "priceRange": "€€",
-        "servesCuisine": business.specialties or "Cocina tradicional andaluza",
+        "servesCuisine": business.specialties or "Cocina tradicional andaluza, tapas, chacinas y raciones",
         "knowsAbout": [
-            f"Cenar en {business.town}",
+            f"Dónde cenar hoy en {business.town}",
             f"Dónde comer en {business.town}",
-            f"Gastronomía en {business.town}",
+            f"Tapas y cenar en {business.town}",
+            f"Gastronomía y restaurantes en {business.town}",
             business.name
+        ],
+        "hasMenu": business.website or "https://facebook.com/barlosmayores",
+        "sameAs": [
+            business.website or "https://facebook.com/barlosmayores"
         ]
     }
     return schema
+
 
 
 def generate_rag_micro_article(business) -> tuple[str, str]:
