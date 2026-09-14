@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8050/api';
+const API_BASE = window.location.origin + '/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
@@ -67,7 +67,8 @@ function renderBusinessList(businesses) {
         const card = document.createElement('div');
         card.className = 'business-card';
 
-        const siteUrl = `http://localhost:8050/sites/${b.slug}/index.html`;
+        const siteUrl = `${window.location.origin}/sites/${b.slug}/index.html`;
+
 
         card.innerHTML = `
             <h4>${escapeHtml(b.name)}</h4>
