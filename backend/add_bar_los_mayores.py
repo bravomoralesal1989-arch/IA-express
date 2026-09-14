@@ -58,9 +58,23 @@ async def register_bar_los_mayores():
         title, html_content, schema_jsonld = generate_rag_micro_article(biz)
         pub_path, pub_url = publish_business_site(biz.slug, html_content)
 
+        existing_content = db.query(GeneratedContent).filter(GeneratedContent.business_id == biz.id).first()
+        if not existing_content:
+            content_record = GeneratedContent(
+                business_id=biz.id,
+                title=title,
+                content_html=html_content,
+                schema_jsonld=schema_jsonld,
+                published_path=pub_path,
+                published_url=pub_url
+            )
+            db.add(content_record)
+            db.commit()
+
         print(f"\n[MICROSITIO RAG GENERADO]:")
         print(f" -> URL Pública: {pub_url}")
         print(f" -> Marcado Schema.org JSON-LD: @type Restaurant / LocalBusiness")
+
 
         # 2. Disparar IndexNow
         index_res = await submit_url_to_indexnow(pub_url)

@@ -116,7 +116,26 @@ async def list_businesses(db: Session = Depends(get_db)):
 
 @app.get("/api/business/{business_id}/content", response_model=list[ContentOut])
 async def get_business_contents(business_id: int, db: Session = Depends(get_db)):
-    return db.query(GeneratedContent).filter(GeneratedContent.business_id == business_id).all()
+    contents = db.query(GeneratedContent).filter(GeneratedContent.business_id == business_id).all()
+    if not contents:
+        business = db.query(Business).filter(Business.id == business_id).first()
+        if business:
+            title, html_content, schema_jsonld = generate_rag_micro_article(business)
+            pub_path, pub_url = publish_business_site(business.slug, html_content)
+            content = GeneratedContent(
+                business_id=business.id,
+                title=title,
+                content_html=html_content,
+                schema_jsonld=schema_jsonld,
+                published_path=pub_path,
+                published_url=pub_url
+            )
+            db.add(content)
+            db.commit()
+            db.refresh(content)
+            contents = [content]
+    return contents
+
 
 
 # --- ENDPOINT MOTOR 1: DISPARADOR EXPRÉS INDEXNOW + GOOGLE ---
