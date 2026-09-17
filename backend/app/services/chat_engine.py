@@ -8,8 +8,13 @@ def extract_town_and_intent(message: str) -> tuple[str | None, str | None]:
     """Extrae el municipio y la intención/categoría del mensaje del usuario."""
     msg_lower = message.lower()
 
-    # Mapeo simple de pueblos del Aljarafe / Sevilla y municipios conocidos
-    towns = ["bormujos", "villanueva del ariscal", "tomares", "aljarafe", "sevilla", "mairena del aljarafe", "gines", "espartinas"]
+    towns = [
+        "bormujos", "villanueva del ariscal", "tomares", "aljarafe", "sevilla", 
+        "mairena del aljarafe", "gines", "espartinas", "camas", "castilleja de la cuesta", 
+        "castilleja", "coria del río", "coria", "san juan de aznalfarache", "san juan",
+        "umbrete", "bollullos de la mitación", "bollullos", "gelves", "olivares", "salteras", 
+        "palomares del río", "benacazón"
+    ]
     detected_town = None
     for t in towns:
         if t in msg_lower:

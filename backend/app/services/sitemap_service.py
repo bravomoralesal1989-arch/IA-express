@@ -9,7 +9,7 @@ def generate_sitemap_xml(db: Session, base_url: str = None) -> str:
     if not base_url:
         base_url = settings.BASE_URL.rstrip('/')
 
-    urlset = ET.Element("urlset", xmlns="http://www.sitemapimages.org/schemas/sitemap/0.9")
+    urlset = ET.Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
 
     # URL principal del sitio
     url_main = ET.SubElement(urlset, "url")

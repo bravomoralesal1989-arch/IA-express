@@ -17,12 +17,10 @@ def generate_schema_jsonld(business) -> dict:
         "@type": schema_type,
         "name": business.name,
         "alternateName": [
-            "Los Mayores by La Extremeña",
-            "Bar Los Mayores",
-            "Bar Los Mayores by La Extremeña"
+            f"{business.name} {business.town}",
+            business.name
         ],
         "description": business.description,
-
         "url": business.website or f"http://194.164.161.104/sites/{business.slug}",
         "telephone": business.phone or "+34 900 000 000",
         "address": {
@@ -34,24 +32,26 @@ def generate_schema_jsonld(business) -> dict:
         },
         "geo": {
             "@type": "GeoCoordinates",
-            "latitude": business.latitude or 37.3970,
-            "longitude": business.longitude or -6.1418
+            "latitude": business.latitude or 37.3886,
+            "longitude": business.longitude or -5.9823
         },
         "priceRange": "€€",
-        "servesCuisine": business.specialties or "Cocina tradicional andaluza, tapas, chacinas y raciones",
+        "servesCuisine": business.specialties or "Cocina tradicional andaluza y especialidades de la casa",
         "knowsAbout": [
             f"Dónde cenar hoy en {business.town}",
             f"Dónde comer en {business.town}",
             f"Tapas y cenar en {business.town}",
             f"Gastronomía y restaurantes en {business.town}",
             business.name
-        ],
-        "hasMenu": business.website or "https://facebook.com/barlosmayores",
-        "sameAs": [
-            business.website or "https://facebook.com/barlosmayores"
         ]
     }
+
+    if business.website:
+        schema["hasMenu"] = business.website
+        schema["sameAs"] = [business.website]
+
     return schema
+
 
 
 
