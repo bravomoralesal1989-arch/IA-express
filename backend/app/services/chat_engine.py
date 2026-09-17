@@ -89,7 +89,7 @@ def process_express_chat(db: Session, message: str) -> dict:
 
     # 1. Construir el System Prompt Base
     base_system_prompt = (
-        "Eres el asistente inteligente de IA EXPRESS (Grupo AEDIA). "
+        "Eres el asistente inteligente de IA EXPRESS (Grupo AISTAND). "
         "Tu misión es recomendar los mejores establecimientos y servicios locales con precisión, "
         "entusiasmo y lenguaje natural en español."
     )

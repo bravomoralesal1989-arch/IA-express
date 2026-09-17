@@ -10,7 +10,7 @@ services:
     ports:
       - "8050:8050"
     environment:
-      - BASE_URL=https://express.aedia.es
+      - BASE_URL=https://express.aistand.es
       - PORT=8050
       - DEBUG=False
     volumes:

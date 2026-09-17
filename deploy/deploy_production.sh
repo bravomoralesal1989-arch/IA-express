@@ -51,17 +51,17 @@ sudo systemctl restart iaexpress
 # 5. Configurar Nginx
 echo "--> Configurando Nginx..."
 sudo rm -f /etc/nginx/sites-enabled/default
-sudo cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/express.aedia.es
-sudo ln -sf /etc/nginx/sites-available/express.aedia.es /etc/nginx/sites-enabled/
+sudo cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/express.aistand.es
+sudo ln -sf /etc/nginx/sites-available/express.aistand.es /etc/nginx/sites-enabled/
 
 # Si el certificado SSL no existe aún, usar config HTTP de inicio rápido
-if [ ! -f "/etc/letsencrypt/live/express.aedia.es/fullchain.pem" ]; then
+if [ ! -f "/etc/letsencrypt/live/express.aistand.es/fullchain.pem" ]; then
     echo "--> SSL no detectado aún. Configurando Nginx en modo HTTP (puerto 80 con IP por defecto)..."
-    sudo bash -c 'cat << "EOF" > /etc/nginx/sites-available/express.aedia.es
+    sudo bash -c 'cat << "EOF" > /etc/nginx/sites-available/express.aistand.es
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name aistand.es express.aistand.es express.aedia.es _;
+    server_name aistand.es express.aistand.es _;
 
 
     gzip on;
@@ -91,6 +91,6 @@ echo "  ¡DESPLIEGUE EN PRODUCCIÓN COMPLETADO CON ÉXITO!                "
 echo "  Backend activo en systemd: service iaexpress status            "
 echo "  Puerto local: http://127.0.0.1:8050                            "
 echo "  Para habilitar HTTPS / SSL con Let's Encrypt ejecuta:          "
-echo "  sudo certbot --nginx -d express.aedia.es                      "
+echo "  sudo certbot --nginx -d express.aistand.es -d aistand.es     "
 echo "=================================================================="
 

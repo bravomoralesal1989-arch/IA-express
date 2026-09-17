@@ -72,7 +72,7 @@ async def run_full_audit():
         audit_results.append(("Protocolo IndexNow Gateway", "PASSED", f"Estado '{index_res['status']}' (HTTP {index_res['http_code']})"))
     elif index_res['http_code'] == 422:
         # HTTP 422 indica que IndexNow rechaza la IP numérica y exige un nombre de dominio público (ej: express.aedia.es)
-        audit_results.append(("Protocolo IndexNow Gateway", "PASSED", "Requiere Dominio DNS (IP numérica 194.164.161.104 rechazada por Bing IndexNow con HTTP 422)"))
+        audit_results.append(("Protocolo IndexNow Gateway", "PASSED", "Requiere Dominio DNS (IP numérica 194.164.161.104 rechazada por Bing IndexNow con HTTP 422 - usar express.aistand.es)"))
     else:
         audit_results.append(("Protocolo IndexNow Gateway", "FAILED", f"Error HTTP {index_res['http_code']}"))
 
